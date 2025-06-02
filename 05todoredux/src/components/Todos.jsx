@@ -1,12 +1,10 @@
-import React,{useState} from 'react'
+import React from 'react'
 import { useSelector, useDispatch } from 'react-redux'
-import {removeTodo,editTodo} from '../features/todo/todoSlice'
+import {removeTodo,editableTodo} from '../features/todo/todoSlice'
 
 function Todos() {
     const todos = useSelector(state => state.todos)
     const dispatch = useDispatch()
-    const [isTodoEditable,setIsTodoEditable] =useState(false)
-
 
   return (
     <>
@@ -21,9 +19,7 @@ function Todos() {
 
             <button
              onClick={()=> {
-              // setIsTodoEditable((prev)=>!prev)
-              // todo.isEditable =isTodoEditable
-              dispatch(editTodo(todo.id))
+              dispatch(editableTodo(todo))
              }}
 
             className="text-white bg-green-500 border-0 py-1 px-4 focus:outline-none hover:bg-green-600 rounded text-md"
