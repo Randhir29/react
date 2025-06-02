@@ -1,22 +1,35 @@
-import React, {useState} from 'react'
-import { useSelector,useDispatch} from 'react-redux'
-import {addTodo} from '../features/todo/todoSlice' 
+import React, { useState, useEffect } from 'react'
+import { useSelector, useDispatch } from 'react-redux'
+import { addTodo, updateTodo } from '../features/todo/todoSlice'
 
 function AddTodo() {
 
-    const [input, setInput] = useState('')
-    const [btnText,setBtnText]=useState('Add Todo')
+  const [input, setInput] = useState('')
 
-    const dispatch = useDispatch()
-    const todos = useSelector(state => state.todos)
+  const dispatch = useDispatch()
+
+  // Accessing the store for current editableTodos state
+  const editableTodo = useSelector(state => state.editableTodos)
 
 
-    const addTodoHandler = (e) => {
-        e.preventDefault()
-        
-        dispatch(addTodo(input))
-        setInput('')
+  // whenever any data comes in editableTodo rendering shall happen automatically, hence useEffect is required.
+  useEffect(() => {
+    setInput(editableTodo ? editableTodo.text : '')
+
+  }, [editableTodo])
+
+
+  const addTodoHandler = (e) => {
+    e.preventDefault()
+    if (input.trim() === '') return;
+    if (editableTodo) {
+      dispatch(updateTodo({ id: editableTodo.id, text: input }));
+    } else {
+      dispatch(addTodo(input))
     }
+    setInput('')
+
+  }
 
   return (
     <form onSubmit={addTodoHandler} className="space-x-3 mt-12">
@@ -29,9 +42,10 @@ function AddTodo() {
       />
       <button
         type="submit"
-        className="text-white bg-indigo-500 border-0 py-2 px-6 focus:outline-none hover:bg-indigo-600 rounded text-lg"
+        className={`text-white border-0 py-2 px-6 focus:outline-none rounded text-lg 
+    ${editableTodo ? 'bg-green-500 hover:bg-green-600' : 'bg-indigo-500 hover:bg-indigo-600'}`}
       >
-        {btnText}
+        {editableTodo ? 'Update Todo' : 'Add Todo'}
       </button>
     </form>
   )
